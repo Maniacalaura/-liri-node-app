@@ -5,6 +5,7 @@ var Spotify = require('Node-Spotify-Api');
 var request = require("request");
 var fs = require("fs")
 var commands = process.argv[2];
+var search = process.argv.slice(3).join(" ");
 
 
 var client = new Twitter(keys.twitter);
@@ -21,13 +22,13 @@ function tinaTweets(){
       }
       }
   });
-};
+};        
 // tinaTweets();
 
 var spotify = new Spotify(keys.spotify)
 
 function spotThis(){
-  spotify.search({ type: 'track', query: process.argv[3] }, function(err, data) {
+  spotify.search({ type: 'track', query: search }, function(err, data) {
     if (err) {
       return console.log('Error occurred: ' + err);
     }
@@ -41,8 +42,11 @@ function spotThis(){
 
 
 function movieThis() {
-  request("http://www.omdbapi.com/?t=" + process.argv[3] + "&y=&plot=short&apikey=trilogy", function (error, response, body) {
+  request("http://www.omdbapi.com/?t=" + search + "&y=&plot=short&apikey=trilogy", function (error, response, body) {
     if (!error && response.statusCode === 200) {
+      if(!search) {
+        search = "Mr Nobody"
+      }
         console.log(JSON.parse(body).Title);
         console.log("Released in: " + JSON.parse(body).Year);
         console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
@@ -52,6 +56,7 @@ function movieThis() {
         console.log("Plot: " + JSON.parse(body).Plot);
         console.log("Starring" +JSON.parse(body).Actors);
     }
+    
   });
 };  
 
@@ -68,6 +73,8 @@ function movieThis() {
 //   }
 //   });
 // };  
+
+
     switch (commands) {
       case "my-tweets":
       tinaTweets();
@@ -85,3 +92,16 @@ function movieThis() {
       doIt();
       break;
     }
+switch (commands){
+
+  case "spotify-this-song":
+  if(!search) {
+    search = "The Sign"
+  }
+  
+  case "movie-this":
+  if(!search) {
+    search = "Mr Robot"
+  }
+  
+}
